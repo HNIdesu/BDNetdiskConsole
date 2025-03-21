@@ -1,3 +1,4 @@
 from error.ErrnoError import ErrnoError
 from error.InvalidStateError import InvalidStateError
 from error.ArgumentError import ArgumentError
+from error.InvalidOperationError import InvalidOperationError
