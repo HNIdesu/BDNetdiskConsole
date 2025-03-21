@@ -6,3 +6,4 @@ from handler.ListFileHandler import ListFileHandler
 from handler.CreateDirectoryHandler import CreateDirectoryHandler
 from handler.ChangeDirectoryHandler import ChangeDirectoryHandler
 from handler.FindFileHandler import FindFileHandler
+from handler.FileInfoHandler import FileInfoHandler

@@ -48,6 +48,15 @@ find_file_parser.add_argument("--name",required=False,type=str)
 find_file_parser.add_argument("--recurse",required=False,action="store_true")
 find_file_parser.set_defaults(handler = FindFileHandler)
 
+file_info_parser = subparsers.add_parser("file")
+file_info_parser.add_argument("remote_file",type=str)
+file_info_parser.add_argument("--dlink",required=False,action="store_true")
+file_info_parser.add_argument("--detail",required=False,action="store_true")
+file_info_parser.add_argument("--thumb",required=False,action="store_true")
+file_info_parser.add_argument("--media",required=False,action="store_true")
+file_info_parser.add_argument("--extra",required=False,action="store_true")
+file_info_parser.set_defaults(handler = FileInfoHandler)
+
 while True:
     cmd = input(context.prompt)
     cmd = cmd.strip()
