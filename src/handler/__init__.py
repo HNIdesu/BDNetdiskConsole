@@ -1,2 +1,3 @@
-from handler.LoginHandler import LoginHandler
 from handler.BaseHandler import BaseHandler
+from handler.LoginHandler import LoginHandler
+from handler.UserInfoHandler import UserInfoHandler
