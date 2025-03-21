@@ -42,6 +42,12 @@ change_directory_parser = subparsers.add_parser("cd")
 change_directory_parser.add_argument("remote_directory",type=str)
 change_directory_parser.set_defaults(handler = ChangeDirectoryHandler)
 
+find_file_parser = subparsers.add_parser("find")
+find_file_parser.add_argument("remote_directory",type=str)
+find_file_parser.add_argument("--name",required=False,type=str)
+find_file_parser.add_argument("--recurse",required=False,action="store_true")
+find_file_parser.set_defaults(handler = FindFileHandler)
+
 while True:
     cmd = input(context.prompt)
     cmd = cmd.strip()
