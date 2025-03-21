@@ -9,7 +9,7 @@ class LoginHandler(BaseHandler):
     def login_guide(username:str,context:Context):
         app_key = AppPrefManager.get_app_key()
         if not app_key:
-            raise KeyError("app_key 未设置，请检查配置。")
+            raise KeyError("app_key 未设置，请检查配置")
         host = "openapi.baidu.com"
         path = "/oauth/2.0/authorize"
         auth_url = f"https://{host}{path}?"+urlencode({
@@ -29,7 +29,7 @@ class LoginHandler(BaseHandler):
         access_token = params.get("access_token", [None])[0]
         expires_in = params.get("expires_in",[None])[0]
         if not access_token:
-            raise KeyError("未在回调 URL 中找到 access_token，请检查输入的 URL 是否正确。")
+            raise KeyError("未在回调 URL 中找到 access_token，请检查输入的 URL 是否正确")
         UserManager.add_user(username,{
             "access_token":access_token,
             "expires_at":int(expires_in+time.time())

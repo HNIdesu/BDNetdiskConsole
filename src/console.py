@@ -25,6 +25,14 @@ userinfo_parser.set_defaults(handler = UserInfoHandler)
 list_user_parser = subparsers.add_parser("listusers")
 list_user_parser.set_defaults(handler = ListUserHandler)
 
+list_file_parser = subparsers.add_parser("ls")
+list_file_parser.add_argument("remote_directory",default=".",type=str)
+list_file_parser.add_argument("--start",required=False,default=0,type=int)
+list_file_parser.add_argument("--limit",required=False,default=50,type=int)
+list_file_parser.add_argument("--detail",required=False,action="store_true")
+list_file_parser.add_argument("--all",required=False,action="store_true")
+list_file_parser.set_defaults(handler = ListFileHandler)
+
 while True:
     cmd = input(context.prompt)
     cmd = cmd.strip()
