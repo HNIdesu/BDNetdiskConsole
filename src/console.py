@@ -38,6 +38,10 @@ mkdir_parser.add_argument("remote_directory",type=str)
 mkdir_parser.add_argument("--force",required=False,action="store_true")
 mkdir_parser.set_defaults(handler = CreateDirectoryHandler)
 
+change_directory_parser = subparsers.add_parser("cd")
+change_directory_parser.add_argument("remote_directory",type=str)
+change_directory_parser.set_defaults(handler = ChangeDirectoryHandler)
+
 while True:
     cmd = input(context.prompt)
     cmd = cmd.strip()
