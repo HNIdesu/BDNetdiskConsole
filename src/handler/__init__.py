@@ -1,1 +1,2 @@
+from handler.LoginHandler import LoginHandler
 from handler.BaseHandler import BaseHandler

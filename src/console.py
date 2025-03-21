@@ -15,6 +15,10 @@ print(f"BDNetdisk Console {context.version}")
 parser = ArgumentParser()
 subparsers = parser.add_subparsers()
 
+login_parser = subparsers.add_parser("login")
+login_parser.add_argument("username")
+login_parser.set_defaults(handler = LoginHandler)
+
 while True:
     cmd = input(context.prompt)
     cmd = cmd.strip()
@@ -29,7 +33,7 @@ while True:
     else:
         try:
             args = parser.parse_args(shlex.split(cmd))
-            args.handler.handle(context,args)
+            args.handler().handle(context,args)
         except SystemExit:
             pass
         except Exception as ex:
