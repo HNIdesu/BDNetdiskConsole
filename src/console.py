@@ -22,6 +22,9 @@ login_parser.set_defaults(handler = LoginHandler)
 userinfo_parser = subparsers.add_parser("uinfo")
 userinfo_parser.set_defaults(handler = UserInfoHandler)
 
+list_user_parser = subparsers.add_parser("listusers")
+list_user_parser.set_defaults(handler = ListUserHandler)
+
 while True:
     cmd = input(context.prompt)
     cmd = cmd.strip()

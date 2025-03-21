@@ -12,7 +12,11 @@ def get_user(username:str)->any:
             return json[username]
         else:
             return None
-        
+
+def all_users()->any:
+     with open(config_path,"r",encoding="utf-8") as sr:
+        return JSON.loads(sr.read())
+
 def add_user(username:str,data:any):
     with open(config_path,"r",encoding="utf-8") as sr:
         json = JSON.loads(sr.read())
