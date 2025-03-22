@@ -7,7 +7,7 @@ src_dir = Path.abspath(Path.dirname(__file__))
 if src_dir not in sys.path:
     sys.path.append(src_dir)
 
-from handler import LoginHandler,ListFileHandler,UserInfoHandler,ListUserHandler,CreateDirectoryHandler,ChangeDirectoryHandler,FileInfoHandler,FindFileHandler,RemoveFileHandler,BatchRemoveFileHandler,CopyFileHandler,MoveFileHandler,BatchCopyFileHandler
+from handler import LoginHandler,ListFileHandler,UserInfoHandler,ListUserHandler,CreateDirectoryHandler,ChangeDirectoryHandler,FileInfoHandler,FindFileHandler,RemoveFileHandler,BatchRemoveFileHandler,CopyFileHandler,MoveFileHandler,BatchCopyFileHandler,BatchMoveFileHandler
 from context import Context
 context = Context()
 print(f"BDNetdisk Console {context.version}")
@@ -91,6 +91,12 @@ move_file_parser.add_argument("--regex",required=False,action="store_true",help=
 move_file_parser.add_argument("--ondup",required=False,default="fail",type=str,help="目标文件已存在时的处理方法")
 move_file_parser.add_argument("--dry-run",required=False,action="store_true",help="只输出要复制的文件和目标文件但是不执行移动操作")
 move_file_parser.set_defaults(handler = MoveFileHandler)
+
+batch_move_file_parser = subparsers.add_parser("mvx")
+batch_move_file_parser.add_argument("script_path",type=str)
+batch_move_file_parser.add_argument("--ondup",required=False,default="fail",type=str,help="目标文件已存在时的处理方法")
+batch_move_file_parser.add_argument("--resume",required=False,action="store_true",help="重试失败的任务")
+batch_move_file_parser.set_defaults(handler = BatchMoveFileHandler)
 
 while True:
     cmd = input(context.prompt)
