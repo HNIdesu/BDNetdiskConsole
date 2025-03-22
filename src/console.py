@@ -7,7 +7,7 @@ src_dir = Path.abspath(Path.dirname(__file__))
 if src_dir not in sys.path:
     sys.path.append(src_dir)
 
-from handler import LoginHandler,ListFileHandler,UserInfoHandler,ListUserHandler,CreateDirectoryHandler,ChangeDirectoryHandler,FileInfoHandler,FindFileHandler,RemoveFileHandler,BatchRemoveFileHandler
+from handler import LoginHandler,ListFileHandler,UserInfoHandler,ListUserHandler,CreateDirectoryHandler,ChangeDirectoryHandler,FileInfoHandler,FindFileHandler,RemoveFileHandler,BatchRemoveFileHandler,CopyFileHandler
 from context import Context
 context = Context()
 print(f"BDNetdisk Console {context.version}")
@@ -60,13 +60,22 @@ file_info_parser.set_defaults(handler = FileInfoHandler)
 remove_file_parser = subparsers.add_parser("rm")
 remove_file_parser.add_argument("remote_paths",type=str,nargs="+")
 remove_file_parser.add_argument("--regex",required=False,action="store_true",help="使用正则匹配文件名，如果启用该选项，只会删除第一个表达式匹配到的文件")
-remove_file_parser.add_argument("--dry-run",required=False,action="store_true",help="只输出要删除的文件名但是不执行删除操作")
+remove_file_parser.add_argument("--dry-run",required=False,action="store_true",help="只输出要删除的文件但是不执行删除操作")
 remove_file_parser.set_defaults(handler = RemoveFileHandler)
 
 batch_remove_file_parser = subparsers.add_parser("rmx")
 batch_remove_file_parser.add_argument("script_path",type=str)
 batch_remove_file_parser.add_argument("--resume",required=False,action="store_true",help="重试失败的任务")
 batch_remove_file_parser.set_defaults(handler = BatchRemoveFileHandler)
+
+copy_file_parser = subparsers.add_parser("cp")
+copy_file_parser.add_argument("source_path",type=str)
+copy_file_parser.add_argument("dest_directory",type=str)
+copy_file_parser.add_argument("--name",required=False,type=str,help="如果需要重命名文件，可以设置该参数")
+copy_file_parser.add_argument("--regex",required=False,action="store_true",help="使用正则匹配源文件名")
+copy_file_parser.add_argument("--ondup",required=False,default="fail",type=str,help="目标文件已存在时的处理方法")
+copy_file_parser.add_argument("--dry-run",required=False,action="store_true",help="只输出要复制的文件和目标文件但是不执行复制操作")
+copy_file_parser.set_defaults(handler = CopyFileHandler)
 
 while True:
     cmd = input(context.prompt)
