@@ -9,12 +9,13 @@ from context import Context
 from error import InvalidStateError,IllegalOperationError
 from api import errno as ERRNO
 
+copy_status_path = "copy_status"
 def handle(context: Context, args):
     if not context.is_logged_in:
         raise InvalidStateError("请先登录。您可以运行 `login` 命令进行登录")
     script_path = args.script_path
-    if args.resume and Path.exists("copy_status"):
-        with open("copy_status","r",encoding="utf-8") as sr:
+    if args.resume and Path.exists(copy_status_path):
+        with open(copy_status_path,"r",encoding="utf-8") as sr:
             status = JSON.loads(sr.read())
     else:
         status = {}
@@ -59,6 +60,6 @@ def handle(context: Context, args):
                 print(f"复制 {info["path"]} 失败，错误码：{info["errno"]}")
             else:
                 transfered_file_count += 1
-        with open("copy_status","w",encoding="utf-8") as sw:
+        with open(copy_status_path,"w",encoding="utf-8") as sw:
             sw.write(JSON.dumps(status))
     print(f"本次复制了{transfered_file_count}/{len(file_collection)}个文件")
