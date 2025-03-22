@@ -7,7 +7,7 @@ src_dir = Path.abspath(Path.dirname(__file__))
 if src_dir not in sys.path:
     sys.path.append(src_dir)
 
-from handler import LoginHandler,ListFileHandler,UserInfoHandler,ListUserHandler,CreateDirectoryHandler,ChangeDirectoryHandler,FileInfoHandler,FindFileHandler
+from handler import LoginHandler,ListFileHandler,UserInfoHandler,ListUserHandler,CreateDirectoryHandler,ChangeDirectoryHandler,FileInfoHandler,FindFileHandler,RemoveFileHandler
 from context import Context
 context = Context()
 print(f"BDNetdisk Console {context.version}")
@@ -56,6 +56,12 @@ file_info_parser.add_argument("--thumb",required=False,action="store_true")
 file_info_parser.add_argument("--media",required=False,action="store_true")
 file_info_parser.add_argument("--extra",required=False,action="store_true")
 file_info_parser.set_defaults(handler = FileInfoHandler)
+
+remove_file_parser = subparsers.add_parser("rm")
+remove_file_parser.add_argument("remote_paths",type=str,nargs="+")
+remove_file_parser.add_argument("--regex",required=False,action="store_true",help="使用正则匹配文件名，如果启用该选项，只会删除第一个表达式匹配到的文件")
+remove_file_parser.add_argument("--dry-run",required=False,action="store_true",help="只输出要删除的文件名但是不执行删除操作")
+remove_file_parser.set_defaults(handler = RemoveFileHandler)
 
 while True:
     cmd = input(context.prompt)
