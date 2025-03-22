@@ -7,7 +7,7 @@ src_dir = Path.abspath(Path.dirname(__file__))
 if src_dir not in sys.path:
     sys.path.append(src_dir)
 
-from handler import *
+from handler import LoginHandler,ListFileHandler,UserInfoHandler,ListUserHandler,CreateDirectoryHandler,ChangeDirectoryHandler,FileInfoHandler,FindFileHandler
 from context import Context
 context = Context()
 print(f"BDNetdisk Console {context.version}")
@@ -71,7 +71,7 @@ while True:
     else:
         try:
             args = parser.parse_args(shlex.split(cmd))
-            args.handler().handle(context,args)
+            args.handler.handle(context,args)
         except SystemExit:
             pass
         except Exception as ex:
