@@ -1,49 +1,10 @@
-import json as JSON
 import re
-from typing import Literal
 
-from urllib.parse import urlencode
-from urllib.request import urlopen
+from api.BDNetdisk import get_file_list, move_files
 from context import Context
-from error import ErrnoError, InvalidStateError, IllegalOperationError,NotSupportedError,ArgumentError
-from handler import ListFileHandler
+from error import InvalidStateError, IllegalOperationError,ArgumentError
 from util import PathUtil
 from api import errno as ERRNO
-
-def move_files(
-    context:Context,
-    filelist:list[(str,str,str,str)],
-    _async:int,
-    ondup:Literal["fail","newcopy","overwrite","skip"]="fail"
-    ) -> any:
-    host = "pan.baidu.com"
-    path = "/rest/2.0/xpan/file"
-    if ondup == "overwrite" or ondup == "skip":
-        raise NotSupportedError("百度网盘API中尚未实现该功能")
-    def foo1(x):
-        source_path = x[0]
-        result = {"path":source_path,"dest":x[1],"newname":x[2]}
-        if x[3]:
-            result["ondup"] = x[3]
-        return result
-    request_body = urlencode({
-        "filelist":JSON.dumps(list(map(foo1,filelist))),
-        "async":_async,
-        "ondup":ondup
-    }).encode("utf-8")
-    with urlopen(f"https://{host}{path}?"+urlencode({
-        "method":"filemanager",
-        "access_token":context.access_token,
-        "opera":"move"
-    }),data=request_body) as res:
-        json = JSON.loads(res.read().decode("utf-8"))
-        errno = json["errno"]
-        if errno == ERRNO.ACCESS_TOKEN_VERIFICATION_FAIL:
-            context.need_relogin = True
-            raise InvalidStateError("登录已过期，请重新登录")
-        elif errno != ERRNO.OK and errno != ERRNO.BATCH_TRANSFER_FAILED:
-            raise ErrnoError(errno)
-        return json
 
 def handle(context: Context, args):
     if not context.is_logged_in:
@@ -58,7 +19,7 @@ def handle(context: Context, args):
         pattern = source_path[source_path.rfind("/")+1:]
         start = 0
         while True:
-            file_list = ListFileHandler.get_file_list(context,start,1000,parent_dir)
+            file_list = get_file_list(context,start,1000,parent_dir)
             for file in file_list:
                 if re.match(pattern,file["server_filename"]):
                     file_path = file["path"]

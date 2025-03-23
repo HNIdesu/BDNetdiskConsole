@@ -1,8 +1,8 @@
 import re
 
+from api.BDNetdisk import get_file_list, move_files
 from context import Context
 from error import IllegalOperationError, InvalidStateError
-from handler import ListFileHandler,MoveFileHandler
 from util import PathUtil
 from api import errno as ERRNO
 
@@ -13,7 +13,7 @@ def handle(context: Context, args):
     if args.regex:
         start = 0
         while True:
-            file_list = ListFileHandler.get_file_list(context,start,1000,context.current_directory)
+            file_list = get_file_list(context,start,1000,context.current_directory)
             for file in file_list:
                 if re.match(args.old_name,file["server_filename"]):
                     file_path = file["path"]
@@ -30,7 +30,7 @@ def handle(context: Context, args):
         for file in file_collection:
             print(f"{file[0]} ->  {PathUtil.resolve(file[1],file[2])}")
     else:
-        response = MoveFileHandler.move_files(context,file_collection,0)
+        response = move_files(context,file_collection,0)
         for result in response["info"]:
             if result["errno"] != ERRNO.OK:
                 print(f"重命名 {result["path"]} 失败，错误码：{result["errno"]}")

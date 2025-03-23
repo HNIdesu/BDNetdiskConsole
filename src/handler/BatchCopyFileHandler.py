@@ -3,7 +3,7 @@ import json as JSON
 import shlex
 from argparse import ArgumentParser
 
-from handler import CopyFileHandler
+from api.BDNetdisk import copy_files
 from util import PathUtil
 from context import Context
 from error import InvalidStateError,IllegalOperationError
@@ -53,7 +53,7 @@ def handle(context: Context, args):
     transfered_file_count = 0
     for i in range(0, len(file_collection), chunk_size):
         print(f"正在复制文件: {i}/{len(file_collection)}")
-        response = CopyFileHandler.copy_files(context,file_collection[i:i+chunk_size],0,args.ondup)
+        response = copy_files(context,file_collection[i:i+chunk_size],0,args.ondup)
         for info in response["info"]:
             status[info["path"]] = info["errno"]
             if info["errno"] != ERRNO.OK:

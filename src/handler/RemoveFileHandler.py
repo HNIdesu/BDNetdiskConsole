@@ -1,35 +1,10 @@
-import json as JSON
 import re
 
-from urllib.parse import urlencode
-from urllib.request import urlopen
+from api.BDNetdisk import get_file_list, remove_files
 from context import Context
-from error import ErrnoError, InvalidStateError, IllegalOperationError
-from error.ArgumentError import ArgumentError
-from handler import ListFileHandler
+from error import InvalidStateError,IllegalOperationError,ArgumentError
 from util import PathUtil
 from api import errno as ERRNO
-
-def remove_files(context:Context,filelist:list,_async:int) -> any:
-    host = "pan.baidu.com"
-    path = "/rest/2.0/xpan/file"
-    request_body = urlencode({
-        "filelist":JSON.dumps(filelist),
-        "async":_async
-    }).encode("utf-8")
-    with urlopen(f"https://{host}{path}?"+urlencode({
-        "method":"filemanager",
-        "access_token":context.access_token,
-        "opera":"delete"
-    }),data=request_body) as res:
-        json = JSON.loads(res.read().decode("utf-8"))
-        errno = json["errno"]
-        if errno == ERRNO.ACCESS_TOKEN_VERIFICATION_FAIL:
-            context.need_relogin = True
-            raise InvalidStateError("登录已过期，请重新登录")
-        elif errno != ERRNO.OK:
-            raise ErrnoError(errno)
-        return json
     
 def handle(context: Context, args):
     if not context.is_logged_in:
@@ -43,7 +18,7 @@ def handle(context: Context, args):
         pattern = remote_path[remote_path.rfind("/")+1:]
         start = 0
         while True:
-            file_list = ListFileHandler.get_file_list(context,start,1000,parent_dir)
+            file_list = get_file_list(context,start,1000,parent_dir)
             for file in file_list:
                 if re.match(pattern,file["server_filename"]):
                     file_path = file["path"]

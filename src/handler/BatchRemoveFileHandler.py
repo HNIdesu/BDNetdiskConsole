@@ -1,9 +1,9 @@
 import os.path as Path
 import json as JSON
 
+from api.BDNetdisk import remove_files
 from context import Context
 from error import InvalidStateError
-from handler import RemoveFileHandler
 from api import errno as ERRNO
 from util import PathUtil
 
@@ -30,7 +30,7 @@ def handle(context: Context, args):
             elif status[filepath] != ERRNO.OK:
                 file_collection.append(PathUtil.get_absolute_remote_path(context.current_directory,filepath))
     if len(file_collection) > 0:
-        response = RemoveFileHandler.remove_files(context,file_collection,0)
+        response = remove_files(context,file_collection,0)
         for info in response["info"]:
             status[info["path"]] = info["errno"]
             if info["errno"] != ERRNO.OK:

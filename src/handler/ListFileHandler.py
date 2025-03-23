@@ -1,11 +1,8 @@
 import time
-from urllib.request import urlopen
-from urllib.parse import urlencode
-import json as JSON
 
-from api import errno as ERRNO
+from api.BDNetdisk import get_file_list
 from context import Context
-from error import ErrnoError,InvalidStateError,ArgumentError
+from error import InvalidStateError,ArgumentError
 from util import PathUtil
 
 def print_file_list(file_list,show_detail=False):
@@ -25,26 +22,6 @@ def print_file_list(file_list,show_detail=False):
                 size = ""
             # 打印文件的详细信息
             print(f"{server_mtime:<20} {size:>10} {filename}")
-
-def get_file_list(context:Context,start:int,limit:int,dir:str,folder:int=0)->list:
-    host = "pan.baidu.com"
-    path = "/rest/2.0/xpan/file"
-    with urlopen(f"https://{host}{path}?"+urlencode({
-        "method":"list",
-        "access_token":context.access_token,
-        "dir":dir,
-        "folder":folder,
-        "start":start,
-        "limit":limit
-    })) as res:
-        json = JSON.loads(res.read().decode("utf-8"))
-        errno = json["errno"]
-        if errno == ERRNO.ACCESS_TOKEN_VERIFICATION_FAIL:
-            context.need_relogin = True
-            raise InvalidStateError("登录已过期，请重新登录")
-        elif errno != ERRNO.OK:
-            raise ErrnoError(errno)
-        return json["list"]
     
 def handle(context: Context, args):
     if not context.is_logged_in:

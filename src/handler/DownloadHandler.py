@@ -1,11 +1,10 @@
-from argparse import ArgumentError
 import subprocess
 import pathlib
 
+from api.BDNetdisk import get_file_metas
 from context import Context
-from error import InvalidStateError
+from error import InvalidStateError,ArgumentError
 from util import PathUtil,BadUtil
-from handler import FileInfoHandler
 
 def handle(context: Context, args):
     if not context.is_logged_in:
@@ -21,7 +20,7 @@ def handle(context: Context, args):
     if not output_path.parent.exists():
         output_path.parent.mkdir(parents=True,exist_ok=True)
     fsid = BadUtil.get_fsid_of_path(context,remote_path)
-    fileinfo = FileInfoHandler.get_file_metas(context,[fsid],dlink=True)
+    fileinfo = get_file_metas(context,[fsid],dlink=True)
     dlink = fileinfo[0]["dlink"]
     subprocess.Popen([
         "curl",
