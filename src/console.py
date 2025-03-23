@@ -7,7 +7,7 @@ src_dir = Path.abspath(Path.dirname(__file__))
 if src_dir not in sys.path:
     sys.path.append(src_dir)
 
-from handler import LoginHandler,ListFileHandler,UserInfoHandler,ListUserHandler,CreateDirectoryHandler,ChangeDirectoryHandler,FileInfoHandler,FindFileHandler,RemoveFileHandler,BatchRemoveFileHandler,CopyFileHandler,MoveFileHandler,BatchCopyFileHandler,BatchMoveFileHandler,RenameHandler
+from handler import LoginHandler,ListFileHandler,UserInfoHandler,ListUserHandler,CreateDirectoryHandler,ChangeDirectoryHandler,FileInfoHandler,FindFileHandler,RemoveFileHandler,BatchRemoveFileHandler,CopyFileHandler,MoveFileHandler,BatchCopyFileHandler,BatchMoveFileHandler,RenameHandler,UploadHandler
 from context import Context
 context = Context()
 print(f"BDNetdisk Console {context.version}")
@@ -104,6 +104,12 @@ rename_parser.add_argument("--dry-run",required=False,action="store_true",help="
 rename_parser.add_argument("old_name",type=str)
 rename_parser.add_argument("new_name",type=str)
 rename_parser.set_defaults(handler = RenameHandler)
+
+upload_parser = subparsers.add_parser("upload")
+upload_parser.add_argument("local_path",type=str)
+upload_parser.add_argument("remote_directory",type=str)
+upload_parser.add_argument("--name",type=str,required=False)
+upload_parser.set_defaults(handler = UploadHandler)
 
 while True:
     cmd = input(context.prompt)
