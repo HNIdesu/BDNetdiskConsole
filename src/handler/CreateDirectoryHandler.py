@@ -1,4 +1,4 @@
-import time
+import time as TIME
 from urllib.parse import urlencode
 from urllib.request import urlopen
 import json as JSON
@@ -9,18 +9,25 @@ from api import errno as ERRNO
 from error.ArgumentError import ArgumentError
 from util import PathUtil
 
-def create_directory(context:Context,dirpath:str):
-    host = "pan.baidu.com"
-    path = "/rest/2.0/xpan/file"
+def create_directory(
+        context:Context,
+        dirpath:str,
+        local_ctime:int=-1,
+        local_mtime:int=-1
+    ):
+    if local_ctime == -1:
+        local_ctime = int(TIME.time())
+    if local_mtime == -1:
+        local_mtime = local_ctime
     request_body = urlencode({
         "path":dirpath,
         "isdir":"1",
         "rtype":"0",
-        "ctime":int(time.time()),
-        "mtime":int(time.time()),
+        "ctime":local_ctime,
+        "mtime":local_mtime,
         "mode":"1"
     }).encode("utf-8")
-    with urlopen(f"https://{host}{path}?"+urlencode({
+    with urlopen(f"https://pan.baidu.com/rest/2.0/xpan/file?"+urlencode({
         "method":"create",
         "access_token":context.access_token,
     }),data=request_body) as res:
