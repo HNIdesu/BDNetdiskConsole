@@ -6,9 +6,7 @@ from api import errno as ERRNO
 from context import Context
 from error import ErrnoError,InvalidStateError
 
-def handle(context: Context, args):
-    if not context.is_logged_in:
-        raise InvalidStateError("请先登录。您可以运行 `login` 命令进行登录。")
+def get_user_info(context: Context):
     host = "pan.baidu.com"
     path = "/rest/2.0/xpan/nas"
     with urlopen(f"https://{host}{path}?"+urlencode({
@@ -22,5 +20,9 @@ def handle(context: Context, args):
             raise InvalidStateError("登录已过期，请重新登录。")
         elif errno != ERRNO.OK:
             raise ErrnoError(errno)
-        else:
-            print(json)
+        return json
+
+def handle(context: Context, args):
+    if not context.is_logged_in:
+        raise InvalidStateError("请先登录。您可以运行 `login` 命令进行登录。")
+    print(get_user_info(context))
